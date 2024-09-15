@@ -1,4 +1,4 @@
-from django.db import models
+from django.contrib.gis.db import models
 from django.utils import timezone
 from django_currentuser.middleware import get_current_authenticated_user
 import uuid
@@ -6,6 +6,9 @@ import uuid
 
 class UUIDModelMixin(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    class Meta:
+        abstract = True
 
 
 class TimeStampMixin(UUIDModelMixin):
@@ -57,19 +60,3 @@ class IsActiveMixin(AuditMixin):
 
     class Meta:
         abstract = True
-
-
-class SoftDeleteMixin(AuditMixin):
-    is_deleted = models.BooleanField(default=False, verbose_name="Silindi mi?")
-    objects = SoftDeleteModelManager()
-
-    class Meta:
-        abstract = True
-
-    def delete(self, *args, **kwargs):
-        self.is_deleted = True
-        self.save()
-
-    def undelete(self):
-        self.is_deleted = False
-        self.save()
