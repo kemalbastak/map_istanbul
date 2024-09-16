@@ -1,10 +1,42 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MapLibre Cluster & Street View Example</title>
+    <script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
+    <link href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" rel="stylesheet"/>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
 </head>
 <body>
+
+<div id="map"></div>
+
+<script>
+    const BASE_URL = 'http://localhost:8000/api/'
+
+    const map = new maplibregl.Map({
+        container: 'map', // container ID
+        style: 'https://api.maptiler.com/maps/streets/style.json?key=get_your_own_OpIi9ZULNHzrESv6T2vL', // Open-source MapLibre street style
+        center: [28.9784, 41.0082], // Starting position [lng, lat] (Istanbul)
+        zoom: 10 // Starting zoom level
+    });
+
+</script>
+
+<script src="{% static 'js/data.js' %}"></script>
 
 </body>
 </html>
