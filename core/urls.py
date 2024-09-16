@@ -24,7 +24,7 @@ urlpatterns = [
     path('api/', include('apps.map.urls')),
     path('schema/', include('apps.swagger.urls')),
     path('', include('apps.frontend.urls')),
-] + debug_toolbar_urls()
+]
 
 if settings.DEBUG:
     urlpatterns = [

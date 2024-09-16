@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block content %}
+
+
+    <form id="registerForm">
+    {% csrf_token %}
+
+        <h2>User Registration</h2>
+
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required placeholder="Enter your username">
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required placeholder="Enter your email">
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required placeholder="Enter your password">
+
+        <label for="first_name">First Name:</label>
+        <input type="text" id="first_name" name="first_name" required placeholder="Enter your first name">
+
+        <label for="last_name">Last Name:</label>
+        <input type="text" id="last_name" name="last_name" required placeholder="Enter your last name">
+
+        <button type="submit">Register</button>
+    </form>
+{% endblock %}
+
+
+{% block extra_script %}
+    <script>
+
+    const csrf_token = "{{ csrf_token }}"
+
+    </script>
+    <script src="{% static "js/register.js" %}"></script>
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static "css/register.css" %}">
+{% endblock %}

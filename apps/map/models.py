@@ -11,6 +11,10 @@ class County(AuditMixin):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = _("İlçe")
+        verbose_name_plural = _("İlçeler")
+
 
 class Locations(GisModelMixin):
     park_name = models.CharField(max_length=255)
@@ -24,3 +28,7 @@ class Locations(GisModelMixin):
 
     def __str__(self):
         return self.park_name
+
+    class Meta:
+        verbose_name = _("Adres")
+        verbose_name_plural = _("Adresler")

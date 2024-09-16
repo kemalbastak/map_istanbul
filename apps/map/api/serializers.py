@@ -23,5 +23,5 @@ class ParkSerializer(GeoFeatureModelSerializer):
         geo_field = 'location'  # Specify which field is the geometry
         id_field = 'id'
 
-    def get_working_hours(self, obj):
+    def get_working_hours(self, obj) -> str:
         return f"{obj.working_start_time.strftime('%H:%M')} - {obj.working_end_time.strftime('%H:%M')}" if obj.working_start_time and obj.working_end_time else "24 Saat"

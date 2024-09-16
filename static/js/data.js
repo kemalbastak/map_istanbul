@@ -5,7 +5,7 @@
 map.addControl(new maplibregl.NavigationControl());
 
 // Fetch GeoJSON data
-fetch(`${BASE_URL}park-locations/`)  // Replace with your GeoJSON data URL
+fetch(`${MAP_URL}park-locations/`)  // Replace with your GeoJSON data URL
     .then(response => response.json())
     .then(data => {
         map.on('load', () => {

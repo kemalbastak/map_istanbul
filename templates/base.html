@@ -1,11 +1,46 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <title>İstanbul Map</title>
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    {% block extra_css %}
+    {% endblock %}
 </head>
 
 <body>
+
+
+{% block content %}
+{% endblock content %}
+
+<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'bootstrap/js/popper.min.js' %}"></script>
+
+<script>
+
+    BASE_URL = "http://localhost:8000"
+
+    API_PATH = {
+        blacklist: "/api/auth/blacklist/",
+        login: "/api/auth/login/",
+        refresh: "/api/auth/refresh/",
+        map: "/api/map/park-locations/",
+        user_me: "/api/auth/user/me/"
+
+    }
+
+    FRONT_PATH = {
+        map: "/map/"
+    }
+
+</script>
+
+{% block extra_script %}
+{% endblock %}
 
 </body>
 </html>

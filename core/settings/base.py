@@ -55,6 +55,8 @@ THIRD_PARTY_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'drf_spectacular',
+    'mapwidgets',
+    'import_export',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS
@@ -72,8 +74,7 @@ MIDDLEWARE = [
 
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # Example: your frontend URL
-    "https://yourdomain.com", # Example: your production URL
+    "http://localhost:3000",
 ]
 
 CORS_ALLOW_HEADERS = [
@@ -137,8 +138,8 @@ REST_FRAMEWORK = {
 
 }
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'İstanbul Map',
-    'DESCRIPTION': 'Locations in İstanbul',
+    'TITLE': 'İstanbul Harita',
+    'DESCRIPTION': 'İSPARK LOKASYONLARI',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
 }
@@ -148,6 +149,7 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
+    'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
 AUTH_USER_MODEL = 'user_auth.CustomUser'

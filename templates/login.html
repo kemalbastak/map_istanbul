@@ -1,10 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-</body>
-</html>
+{% load static %}
+{% load i18n %}
+
+{% block content %}
+
+<div class="card col-md-4">
+    <div class="card-header">
+        Login
+    </div>
+    <div class="card-body">
+        <form id="loginForm">
+            <div class="mb-3">
+                <label for="email" class="form-label">{% trans "Mail Adresi" %}</label>
+                <input type="email" class="form-control" id="email"
+                       placeholder="{% trans "Mail adresinizi giriniz..." %}">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">{% trans 'Parola' %}</label>
+                <input type="password" class="form-control" id="password"
+                       placeholder="{% trans "Parolanızı giriniz..." %}">
+            </div>
+            <button type="submit" class="btn btn-primary w-100">{% trans 'Giriş' %}</button>
+        </form>
+        <div class="register mt-3">
+            <a href="#">Kayıt Ol</a>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static "css/login.css" %}">
+{% endblock %}
+
+{% block extra_script %}
+    <script src="{% static 'js/login.js' %}"></script>
+
+
+{% endblock %}

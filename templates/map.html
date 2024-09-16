@@ -25,7 +25,7 @@
 <div id="map"></div>
 
 <script>
-    const BASE_URL = 'http://localhost:8000/api/'
+    const MAP_URL = `${BASE_URL}/api/`
 
     const map = new maplibregl.Map({
         container: 'map', // container ID
@@ -37,6 +37,7 @@
 </script>
 
 <script src="{% static 'js/data.js' %}"></script>
+<script src="{% static 'js/events.js' %}"></script>
 
 </body>
 </html>
