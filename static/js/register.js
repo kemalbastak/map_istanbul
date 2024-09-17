@@ -1,16 +1,13 @@
 document.getElementById('registerForm').addEventListener('submit', async function (event) {
     event.preventDefault();
-    const formElement = document.querySelector("registerForm");
 
-    const form = {
+    const formData = {
         username: document.getElementById('username').value,
         email: document.getElementById('email').value,
         password: document.getElementById('password').value,
         first_name: document.getElementById('first_name').value,
         last_name: document.getElementById('last_name').value
     };
-
-    const formData = new FormData(form)
 
     try {
         console.log(formData)
@@ -24,9 +21,12 @@ document.getElementById('registerForm').addEventListener('submit', async functio
 
         if (response.ok) {
             const data = await response.json();
-            window.location.href = API_PATH.login
+            window.location.href = FRONT_PATH.login
         } else {
-            alert('Registration failed');
+
+            const errorData = await response.json();
+            handleError(errorData)
+
         }
     } catch (error) {
         alert('Error: ' + error.message);

@@ -1,12 +1,56 @@
+{% extends "base.html" %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MapLibre Cluster & Street View Example</title>
-    <script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
+
+{% block content %}
+    <div id="map"></div>
+    <div class="modal fade" id="parkModal" data-bs-target="#parkModal" data-bs-toggle="modal" tabindex="-1"
+         role="dialog" aria-labelledby="parkModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="parkModalLabel">Create New Park</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="parkForm">
+                        <div class="form-group">
+                            <label for="park_name">Park Name</label>
+                            <input type="text" class="form-control" id="park_name" placeholder="Enter park name"
+                                   required>
+                        </div>
+                        <div class="form-group">
+                            <label for="park_capacity">Capacity</label>
+                            <input type="number" class="form-control" id="park_capacity" placeholder="Enter capacity"
+                                   required>
+                        </div>
+                        <div class="form-group">
+                            <label for="park_location">Location (Longitude, Latitude)</label>
+                            <input type="text" class="form-control" id="park_location" placeholder="Enter location"
+                                   required>
+                        </div>
+                        <div class="form-group">
+                            <label for="working_hours">Working Hours</label>
+                            <input type="text" class="form-control" id="working_hours" placeholder="Enter working hours"
+                                   required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="savePark">Save Park</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+
+{% block extra_css %}
+
     <link href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" rel="stylesheet"/>
     <style>
         body {
@@ -19,25 +63,29 @@
             height: 100vh;
         }
     </style>
-</head>
-<body>
+{% endblock %}
 
-<div id="map"></div>
+{% block extra_script %}
 
-<script>
-    const MAP_URL = `${BASE_URL}/api/`
+    <script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
+    <script>
+        const MAP_URL = `${BASE_URL}/api/map/`
 
-    const map = new maplibregl.Map({
-        container: 'map', // container ID
-        style: 'https://api.maptiler.com/maps/streets/style.json?key=get_your_own_OpIi9ZULNHzrESv6T2vL', // Open-source MapLibre street style
-        center: [28.9784, 41.0082], // Starting position [lng, lat] (Istanbul)
-        zoom: 10 // Starting zoom level
-    });
+        const DEFAULT_CENTER = [28.9784, 41.0082]
 
-</script>
+        const map = new maplibregl.Map({
+            container: 'map', // container ID
+            style: 'https://api.maptiler.com/maps/streets/style.json?key=get_your_own_OpIi9ZULNHzrESv6T2vL', // Open-source MapLibre street style
+            center: DEFAULT_CENTER, // Starting position [lng, lat] (Istanbul)
+            zoom: 10 // Starting zoom level
+        });
 
-<script src="{% static 'js/data.js' %}"></script>
-<script src="{% static 'js/events.js' %}"></script>
 
-</body>
-</html>
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="{% static 'js/data.js' %}"></script>
+    <script src="{% static 'js/events.js' %}"></script>
+
+{% endblock %}
+

@@ -13,12 +13,13 @@
 
 <body>
 
-
+<div id="toast-elem"></div>
 {% block content %}
 {% endblock content %}
 
 <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'bootstrap/js/popper.min.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
 
 <script>
 
@@ -34,8 +35,11 @@
     }
 
     FRONT_PATH = {
-        map: "/map/"
+        map: "/map/",
+        login: "/login/"
     }
+
+    const USER_ACCESS_KEY = JSON.parse('{{ USER_ACCESS_KEY }}')
 
 </script>
 

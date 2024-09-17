@@ -1,14 +1,5 @@
 const form = document.getElementById('loginForm');
 
-function setCookie(name, value, days) {
-    let expires = "";
-    if (days) {
-        const date = new Date();
-        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000)); // Set expiration
-        expires = "; expires=" + date.toUTCString();
-    }
-    document.cookie = name + "=" + (value || "") + expires + "; path=/";
-}
 
 form.addEventListener('submit', async function (event) {
     event.preventDefault();
@@ -33,9 +24,12 @@ form.addEventListener('submit', async function (event) {
 
             // Store the returned data in localStorage
             localStorage.setItem('userData', JSON.stringify(data));
+            setCookie("userData", JSON.stringify(data), 3)
             window.location.href = FRONT_PATH.map
         } else {
-            alert('Login failed!');
+            const errorData = await response.json()
+            console.log(errorData)
+            handleError(errorData)
         }
     } catch (error) {
         console.error('Error:', error);

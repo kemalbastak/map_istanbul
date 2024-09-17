@@ -57,6 +57,7 @@ THIRD_PARTY_APPS = [
     'drf_spectacular',
     'mapwidgets',
     'import_export',
+    'django_filters',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS
@@ -106,6 +107,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'apps.frontend.views.context',
             ],
         },
     },
@@ -145,11 +147,12 @@ SPECTACULAR_SETTINGS = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=14),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
     'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION'
 }
 
 AUTH_USER_MODEL = 'user_auth.CustomUser'
@@ -177,7 +180,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Istanbul'
 
 USE_I18N = True
 
@@ -212,6 +215,6 @@ if DEBUG:
         "debug_toolbar",
     ]
     MIDDLEWARE = [
-        "debug_toolbar.middleware.DebugToolbarMiddleware",
         *MIDDLEWARE,
+        "debug_toolbar.middleware.DebugToolbarMiddleware",
     ]

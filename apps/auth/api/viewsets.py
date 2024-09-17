@@ -4,6 +4,7 @@ from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets, permissions
 
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.request import Request
 
 from .serializers import UserSerializer
 from rest_framework_simplejwt import views as jwt_views
@@ -32,6 +33,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
         return super().update(request, *args, **kwargs)
 
+    @csrf_exempt
     def create(self, request, *args, **kwargs):
         return super().create(request, *args, **kwargs)
 
@@ -55,7 +57,10 @@ class AuthTokenObtainPairView(jwt_views.TokenObtainPairView):
 
 @extend_schema(tags=['Auth'])
 class AuthTokenRefreshView(jwt_views.TokenRefreshView):
-    ...
+    @csrf_exempt
+    def post(self, request: Request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
 
 
 @extend_schema(tags=['Auth'])
