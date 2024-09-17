@@ -17,7 +17,7 @@ class County(AuditMixin):
 
 
 class Locations(GisModelMixin):
-    park_name = models.CharField(max_length=255)
+    park_name = models.CharField(max_length=255, null=True, blank=True)
     location_name = models.CharField(max_length=255, verbose_name=_('Lokasyon Adı'))
     park_type_id = models.CharField(max_length=100, verbose_name=_('Park ID'))
     park_type_desc = models.CharField(max_length=100, verbose_name=_('Park Açıklama'))

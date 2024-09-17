@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+
+{% block content %}
+    <form method="post">
+    {% csrf_token %}
+        <div class="register mt-3 justify-content-center">
+            <button type="submit" class="btn btn-success">{% translate 'Haritaya Erişim Yetkisi Al' %}</button>
+        </div>
+    </form>
+{% endblock %}

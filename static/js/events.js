@@ -30,9 +30,7 @@ Object.entries(menuOptions).forEach(([key, value]) => {
 
     menuItem.addEventListener('click', async () => {
         if (key === 'add') {
-            const newData = {
-
-            }
+            const newData = {}
 
         }
         if (key === 'closest') {
@@ -50,6 +48,7 @@ Object.entries(menuOptions).forEach(([key, value]) => {
                         essential: true  // This animation is considered essential
                     });
                     map.getSource('points').setData(data)
+                    mapGeoData = data
 
 
                 } catch (error) {
@@ -107,3 +106,38 @@ map.on('contextmenu', (e) => {
     // Optional: Log the coordinates
     console.log(`Longitude: ${lng}, Latitude: ${lat}`);
 });
+
+map.on('zoomend', (e) => {
+    const zoomLevel = map.getZoom()
+    console.log(mapGeoData)
+    if (zoomLevel < 8 && mapGeoData.features.length < 10)
+    fetchMapFilterData(`${BASE_URL}${API_PATH.map}`, {}).then(data => {
+        map.getSource('points').setData(data)
+        console.log("newdata", data)
+    })
+    console.log(zoomLevel)
+})
+
+
+async function fetchMapFilterData(base_url, query) {
+    const queryParams = new URLSearchParams(query)
+    let url
+    if (query){
+        url = `${base_url}?${queryParams}`}
+    else{
+        url = base_url
+    }
+    console.log(url)
+    try {
+        const data = await fetchData(url);
+        console.log(data);
+        map.getSource('points').setData(data)
+        mapGeoData = data
+
+
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+}
+
+

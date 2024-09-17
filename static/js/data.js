@@ -14,9 +14,11 @@ map.on('load', () => {
         .then(data => {
             // Add GeoJSON data with clustering enabled
             console.log(data)
+            mapGeoData = data
+
             map.addSource('points', {
                 'type': 'geojson',
-                'data': data,
+                'data': mapGeoData,
                 'cluster': true,  // Enable clustering
                 'clusterMaxZoom': 14, // Max zoom to cluster points
                 'clusterRadius': 50   // Radius of each cluster when clustering points (default: 50)
@@ -79,25 +81,59 @@ map.on('load', () => {
             map.on('click', 'unclustered-point', (e) => {
                 const coordinates = e.features[0].geometry.coordinates.slice();
                 const {
+                    uid,
                     capacity_of_park,
                     county_name,
                     location_name,
                     park_name,
                     park_type_desc,
-                    working_hours
+                    working_start_time,
+                    working_end_time,
                 } = e.features[0].properties;
-                console.log(e.features)
+                console.log(e.features[0].properties);
                 const popupContent = `
-                <div style="padding: 10px; font-family: Arial, sans-serif; color: #333;">
-                    <h3 style="color: #2E86C1; margin-bottom: 5px;">${park_name}</h3>
-                    <input type="hidden" name="id" value="${e.features[0].id}">
-                    <p style="margin: 5px 0;"><strong>Adres:</strong> ${location_name}, ${county_name}</p>
-                    <p style="margin: 5px 0;"><strong>Açıklama:</strong> ${park_type_desc}</p>
-                    <p style="margin: 5px 0;"><strong>Kapasite:</strong> ${capacity_of_park} Araç</p>
-                    <p style="margin: 5px 0;"><strong>Çalışma Saatleri:</strong> ${working_hours}</p>
-                    
-                    <button type="submit" class="btn btn-success" onclick="updateForm(this)">Güncelle</button>
-                </div>
+                <form id="parkUpdateForm" style="padding: 10px; font-family: Arial, sans-serif; color: #333;">
+    <div class="form-group">
+        <label for="parkName"><strong>Park Adı:</strong></label>
+        <input type="text" class="form-control" id="parkName" name="park_name" value="${park_name}">
+    </div>
+
+    <div class="form-group">
+        <input type="hidden" name="id" value="${uid}">
+    </div>
+
+    <div class="form-group">
+        <label for="locationName"><strong>Adres:</strong></label>
+        <input type="text" class="form-control" id="locationName" name="location_name" value="${location_name}">
+    </div>
+    <div class="form-group">
+        <label for="countyName"><strong>İlçe:</strong></label>
+        <input type="text" class="form-control" id="countyName" name="county_name" value="${county_name}">
+    </div>
+
+    <div class="form-group">
+        <label for="parkTypeDesc"><strong>Açıklama:</strong></label>
+        <input type="text" class="form-control" id="parkTypeDesc" name="park_type_desc" value="${park_type_desc}">
+    </div>
+
+    <div class="form-group">
+        <label for="capacityOfPark"><strong>Kapasite:</strong></label>
+        <input type="number" class="form-control" id="capacityOfPark" name="capacity_of_park" value="${capacity_of_park}">
+    </div>
+
+    <div class="form-group">
+        <label for="workingStartTime"><strong>Başlangıç:</strong></label>
+        <input type="text" class="form-control" id="workingStartTime" name="working_start_time" value="${working_start_time ? working_start_time : ""}">
+    </div>
+    <div class="form-group">
+        <label for="workingEndTime"><strong>Bitiş:</strong></label>
+        <input type="text" class="form-control" id="workingEndTime" name="working_end_time" value="${working_end_time ? working_end_time: ""}">
+    </div>
+    <input type="hidden" name="coordinates" id="coordinates" value="${coordinates}">
+
+    <button type="button" class="btn btn-success" onclick="updateForm(this)">Güncelle</button>
+</form>
+
             `;
                 new maplibregl.Popup()
                     .setLngLat(coordinates)
@@ -118,7 +154,61 @@ map.on('load', () => {
         .catch(error => console.error('Error fetching GeoJSON data:', error));
 });
 
-updateForm = (e) => {
-    console.log(e.parentNode)
-    e.parentNode.innerHTML = `<div>kcb</div>`
+function updateForm(button) {
+    const form = document.getElementById('parkUpdateForm');
+
+    // Extract data from form
+    const parkId = form.querySelector('input[name="id"]').value;
+    const parkName = form.querySelector('input[name="park_name"]').value;
+    const locationName = form.querySelector('input[name="location_name"]').value;
+    const countyName = form.querySelector('input[name="county_name"]').value;
+    const parkTypeDesc = form.querySelector('input[name="park_type_desc"]').value;
+    const capacityOfPark = form.querySelector('input[name="capacity_of_park"]').value;
+    const workingStartTime = form.querySelector('input[name="working_start_time"]').value;
+    const workingEndTime = form.querySelector('input[name="working_end_time"]').value;
+    const coordinates = form.querySelector('input[name="coordinates"]').value;
+
+    // Create the updated data object
+    const updatedData = {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": coordinates.split(',').map(Number)
+            },
+            "properties": {
+                park_name: parkName,
+                location_name: locationName,
+                county_name: countyName,
+                park_type_id: parkTypeDesc,
+                park_type_desc: parkTypeDesc,
+                capacity_of_park: capacityOfPark,
+                working_start_time: workingStartTime ? workingStartTime : null,
+                working_end_time: workingEndTime ? workingEndTime : null
+            }
+        }
+    ;
+    console.log(updatedData)
+    // Send PUT request
+    fetchData(`${MAP_URL}park-locations/${parkId}/`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${USER_ACCESS_KEY.access}`  // Replace with your token key
+        },
+        body: JSON.stringify(updatedData)
+    })
+        .then(data => {
+            const dataIndex = mapGeoData.features.findIndex(x => x.id === parkId)
+            mapGeoData.features[dataIndex] = data;
+            console.log('Update successful', data);
+            map.getSource('points').setData(mapGeoData)
+
+
+            // Optionally, you can refresh the map data or update the UI
+            alert('Park information updated successfully!');
+        })
+        .catch(error => {
+            console.error('Error updating park:', error);
+        });
 }
+

@@ -4,34 +4,36 @@ from apps.map.models import Locations, County
 
 
 class LocationsSerializer(GeoFeatureModelSerializer):
-    county_name = serializers.CharField(source='county_name.name')
-    working_hours = serializers.SerializerMethodField()
+    uid = serializers.CharField(source='id', read_only=True)  # propertyde id görünmediği için bu şekilde ekledik
+    county_name = serializers.CharField(source="county_name.name")
 
     class Meta:
         model = Locations
         fields = (
             'id',
+            'uid',
             'park_name',
             'location_name',
             'park_type_id',
             'park_type_desc',
             'capacity_of_park',
-            'working_hours',
+            'working_start_time',
+            'working_end_time',
             'county_name',
             'location',
+
         )
         geo_field = 'location'  # Specify which field is the geometry
         id_field = 'id'
+        extra_kwargs = {'working_start_time': {'required': False}, 'working_end_time': {'required': False}}
 
-    def get_working_hours(self, obj) -> str:
-        return f"{obj.working_start_time.strftime('%H:%M')} - {obj.working_end_time.strftime('%H:%M')}" if obj.working_start_time and obj.working_end_time else "24 Saat"
 
     def create(self, validated_data):
         # Handle nested county_name and extract the actual county object
         county_data = validated_data.pop('county_name', None)
         if county_data:
             county_name = county_data['name']
-            county_obj, created = County.objects.get_or_create(name=county_name)  # Create or get existing county
+            county_obj, created = County.objects.get_or_create(name__iexact=county_name)  # Create or get existing county
 
         # Create the Location instance with the validated data
         location = Locations.objects.create(
@@ -52,7 +54,7 @@ class LocationsSerializer(GeoFeatureModelSerializer):
         county_data = validated_data.pop('county_name', None)
         if county_data:
             county_name = county_data['name']
-            county_obj, created = County.objects.get_or_create(name=county_name)
+            county_obj, created = County.objects.get_or_create(name__iexact=county_name)
             instance.county_name = county_obj
 
         instance.park_name = validated_data.get('park_name', instance.park_name)

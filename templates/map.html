@@ -71,6 +71,8 @@
     <script>
         const MAP_URL = `${BASE_URL}/api/map/`
 
+        let mapGeoData;
+
         const DEFAULT_CENTER = [28.9784, 41.0082]
 
         const map = new maplibregl.Map({

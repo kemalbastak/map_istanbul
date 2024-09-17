@@ -7,6 +7,8 @@ from rest_framework.authentication import get_authorization_header
 from rest_framework.authentication import SessionAuthentication
 from rest_framework_simplejwt.authentication import JWTAuthentication, api_settings
 
+from common.enums.group import GroupEnum
+
 
 def drf_login_required(view_func):
     @wraps(view_func)
@@ -23,6 +25,9 @@ def drf_login_required(view_func):
         # Perform DRF authentication
         if user is None:
             return redirect("frontend/:login")
+        print(view_func.__name__)
+        if not user.groups.filter(name=GroupEnum.map.value) and view_func.__name__ != "permission_control":
+            return redirect("frontend/:permission_control")
 
         return view_func(request, *args, **kwargs)
 

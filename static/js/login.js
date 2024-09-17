@@ -23,9 +23,8 @@ form.addEventListener('submit', async function (event) {
             const data = await response.json();
 
             // Store the returned data in localStorage
-            localStorage.setItem('userData', JSON.stringify(data));
             setCookie("userData", JSON.stringify(data), 3)
-            window.location.href = FRONT_PATH.map
+            window.location.href = FRONT_PATH.permission_control
         } else {
             const errorData = await response.json()
             console.log(errorData)
