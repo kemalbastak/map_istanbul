@@ -79,7 +79,8 @@ map.on('load', () => {
 
             // Handle point click events
             map.on('click', 'unclustered-point', (e) => {
-                const coordinates = e.features[0].geometry.coordinates.slice();
+                const feature = e.features[0]
+                const coordinates = feature.geometry.coordinates.slice();
                 const {
                     uid,
                     capacity_of_park,
@@ -91,6 +92,11 @@ map.on('load', () => {
                     working_end_time,
                 } = e.features[0].properties;
                 console.log(e.features[0].properties);
+                const dataIndex = mapGeoData.features.findIndex(f =>
+                    f.geometry.coordinates[0] === feature.geometry.coordinates[0] &&
+                    f.geometry.coordinates[1] === feature.geometry.coordinates[1]
+                );
+                console.log(dataIndex)
                 const popupContent = `
                 <form id="parkUpdateForm" style="padding: 10px; font-family: Arial, sans-serif; color: #333;">
     <div class="form-group">
@@ -100,6 +106,10 @@ map.on('load', () => {
 
     <div class="form-group">
         <input type="hidden" name="id" value="${uid}">
+    </div>
+
+    <div class="form-group">
+        <input type="hidden" name="index" value="${dataIndex}">
     </div>
 
     <div class="form-group">
@@ -127,11 +137,11 @@ map.on('load', () => {
     </div>
     <div class="form-group">
         <label for="workingEndTime"><strong>Bitiş:</strong></label>
-        <input type="text" class="form-control" id="workingEndTime" name="working_end_time" value="${working_end_time ? working_end_time: ""}">
+        <input type="text" class="form-control" id="workingEndTime" name="working_end_time" value="${working_end_time ? working_end_time : ""}">
     </div>
     <input type="hidden" name="coordinates" id="coordinates" value="${coordinates}">
 
-    <button type="button" class="btn btn-success" onclick="updateForm(this)">Güncelle</button>
+    <button type="button" class="btn btn-success" id="submitForm" onclick="updateForm(this)">Güncelle</button>
 </form>
 
             `;
@@ -168,6 +178,11 @@ function updateForm(button) {
     const workingEndTime = form.querySelector('input[name="working_end_time"]').value;
     const coordinates = form.querySelector('input[name="coordinates"]').value;
 
+
+    const fetchUrl = parkId !== 'undefined' || null || '' ? `${MAP_URL}park-locations/${parkId}/` : `${MAP_URL}park-locations/`
+    const fetchMethod = parkId !== 'undefined' || null || '' ? `PUT` : `POST`
+
+    console.log(fetchUrl, parkId, typeof parkId)
     // Create the updated data object
     const updatedData = {
             "type": "Feature",
@@ -189,8 +204,8 @@ function updateForm(button) {
     ;
     console.log(updatedData)
     // Send PUT request
-    fetchData(`${MAP_URL}park-locations/${parkId}/`, {
-        method: 'PUT',
+    fetchData(fetchUrl, {
+        method: fetchMethod,
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${USER_ACCESS_KEY.access}`  // Replace with your token key
@@ -198,13 +213,23 @@ function updateForm(button) {
         body: JSON.stringify(updatedData)
     })
         .then(data => {
-            const dataIndex = mapGeoData.features.findIndex(x => x.id === parkId)
-            mapGeoData.features[dataIndex] = data;
-            console.log('Update successful', data);
-            map.getSource('points').setData(mapGeoData)
+
+            if (fetchMethod === 'PUT') {
+                const dataIndex = mapGeoData.features.findIndex(x => x.id === parkId)
+                mapGeoData.features[dataIndex] = data;
+                console.log('Update successful', data);
+                map.getSource('points').setData(mapGeoData)
+            }
+            if (fetchMethod === 'POST') {
+                mapGeoData.features[mapGeoData.features.length - 1] = data
 
 
-            // Optionally, you can refresh the map data or update the UI
+
+                console.log('Update successful', data);
+                map.getSource('points').setData(mapGeoData)
+            }
+
+
             alert('Park information updated successfully!');
         })
         .catch(error => {

@@ -1,67 +1,29 @@
 {% extends "base.html" %}
 {% load static %}
 
-
 {% block content %}
     <div id="map"></div>
-    <div class="modal fade" id="parkModal" data-bs-target="#parkModal" data-bs-toggle="modal" tabindex="-1"
-         role="dialog" aria-labelledby="parkModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="parkModalLabel">Create New Park</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="parkForm">
-                        <div class="form-group">
-                            <label for="park_name">Park Name</label>
-                            <input type="text" class="form-control" id="park_name" placeholder="Enter park name"
-                                   required>
-                        </div>
-                        <div class="form-group">
-                            <label for="park_capacity">Capacity</label>
-                            <input type="number" class="form-control" id="park_capacity" placeholder="Enter capacity"
-                                   required>
-                        </div>
-                        <div class="form-group">
-                            <label for="park_location">Location (Longitude, Latitude)</label>
-                            <input type="text" class="form-control" id="park_location" placeholder="Enter location"
-                                   required>
-                        </div>
-                        <div class="form-group">
-                            <label for="working_hours">Working Hours</label>
-                            <input type="text" class="form-control" id="working_hours" placeholder="Enter working hours"
-                                   required>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="savePark">Save Park</button>
-                </div>
-            </div>
-        </div>
-    </div>
+
 {% endblock %}
 
 
-
 {% block extra_css %}
-
     <link href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" rel="stylesheet"/>
     <style>
         body {
             margin: 0;
             padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
         }
 
         #map {
-            width: 100vw;
-            height: 100vh;
+            width: 100%;
+            height: 100%;
+            flex: 1; /* Make sure the map takes up available space */
         }
+
     </style>
 {% endblock %}
 
@@ -88,6 +50,9 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="{% static 'js/data.js' %}"></script>
     <script src="{% static 'js/events.js' %}"></script>
-
+    <script>$("#menu-toggle").click(function (e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });</script>
 {% endblock %}
 

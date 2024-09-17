@@ -30,7 +30,26 @@ Object.entries(menuOptions).forEach(([key, value]) => {
 
     menuItem.addEventListener('click', async () => {
         if (key === 'add') {
-            const newData = {}
+            const newData = {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [lng, lat]
+                },
+                "properties": {
+                    park_name: "",
+                    location_name: "",
+                    county_name: "",
+                    park_type_id: "",
+                    park_type_desc: "",
+                    capacity_of_park: "",
+                    working_start_time: "",
+                    working_end_time: ""
+                }
+            }
+            mapGeoData.features.push(newData)
+            map.getSource('points').setData(mapGeoData)
+
 
         }
         if (key === 'closest') {
@@ -111,20 +130,18 @@ map.on('zoomend', (e) => {
     const zoomLevel = map.getZoom()
     console.log(mapGeoData)
     if (zoomLevel < 8 && mapGeoData.features.length < 10)
-    fetchMapFilterData(`${BASE_URL}${API_PATH.map}`, {}).then(data => {
-        map.getSource('points').setData(data)
-        console.log("newdata", data)
-    })
-    console.log(zoomLevel)
+        fetchMapFilterData(`${BASE_URL}${API_PATH.map}`, {}).then(data => {
+            map.getSource('points').setData(data)
+        })
 })
 
 
 async function fetchMapFilterData(base_url, query) {
     const queryParams = new URLSearchParams(query)
     let url
-    if (query){
-        url = `${base_url}?${queryParams}`}
-    else{
+    if (query) {
+        url = `${base_url}?${queryParams}`
+    } else {
         url = base_url
     }
     console.log(url)

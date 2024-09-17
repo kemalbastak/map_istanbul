@@ -1,6 +1,7 @@
 import pandas as pd
 import ssl
 
+from django.contrib.auth.models import Group
 from django.contrib.gis.geos import Point
 from datetime import datetime
 from apps.map.models import Locations, County
@@ -11,6 +12,8 @@ ssl._create_default_https_context = ssl._create_unverified_context
 url = "https://data.ibb.gov.tr/dataset/7456b10e-1128-48f7-82f5-5503d98bfb1b/resource/f4f56e58-5210-4f17-b852-effe356a890c/download/ispark_parking.csv"
 df = pd.read_csv(url)
 print(df.head(6))
+
+Group.objects.get_or_create(name='Harita')
 
 
 for _, row in df.iterrows():
@@ -25,7 +28,7 @@ for _, row in df.iterrows():
         print(e)
         working_time = {}
 
-    county, created = County.objects.get_or_create(park_name=row['COUNTY_NAME'])
+    county, created = County.objects.get_or_create(name=row['COUNTY_NAME'])
 
     Locations.objects.create(
         park_name=row['PARK_NAME'],
